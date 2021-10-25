@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Chris Matthews">
+    <meta name="description" content="Philalethia means the love of truth. This page is a blog resource of articles, devotionals and quotations about the one unshakeable source of Truth and Love in the world, Jesus Christ.">
+    <title>philalethia</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/blog.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header class="blog-header bg-dark p-2">
+          <div class="row flex-nowrap justify-content-between align-items-center">
+            <div class="col text-center">
+            <a href="/">
+                <img class='img-fluid img-logo' src="{{ url_for('static', filename='img/logo.png') }}" alt="logo">
+            </a>
+            </div>
+            <div class="col-7">
+                <h3 class="text-light m-0 p-0">philalethia <small class="text-muted">(φιλαλήθεια):</small></h3><p class="m-0 p-0 text-light">the love of truth</p>
+            </div>
+            <div class="col-4 d-flex justify-content-end align-items-center">
+                {% if session['admin'] %}
+                    <a class="hover btn btn-sm btn-outline-secondary" href="/admin">Admin</a>
+                {% endif %}
+                <div class="dropdown">
+                    <a class="link-secondary hover" role="button" id="searchForm" data-bs-toggle="dropdown" href="#ddmenu" aria-expanded="false">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="mx-3" role="img" viewBox="0 0 24 24"><title>Search</title><circle cx="10.5" cy="10.5" r="7.5"/><path d="M21 21l-5.2-5.2"/></svg>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-dark" id="ddmenu">
+                        <form action="/searchposts" method="POST" class="p-2">
+                            <select class="mb-2 form-select" name="search_by">
+                                <option value="1" selected>Title</option>
+                                <option value="2">Author</option>
+                                <option value="3">Content</option>
+                            </select>
+                        <input type="text" class="mb-2 form-control" name="searchString">
+                        <input type="submit" class="btn btn-primary form-control" value="Search">
+                        </form>
+                    </div>
+                </div>
+                {% if session %}
+                    <a class="hover btn btn-sm btn-outline-secondary" href="/logout">Logout</a>
+                {% else %}
+                    <a class="hover btn btn-sm btn-outline-secondary" href="/signin">Sign up/in</a>
+                {% endif %}
+            </div>
+          </div>
+        </header>
+        <div class="nav-scroller bg-light py-1 mb-2">
+          <nav class="nav d-flex justify">
+            {%for t in post_types %}
+                <a class="p-2 link-secondary" href="/showtype/{{t.id}}">{{t.name}}</a>
+            {% endfor %}
+            </nav>
+        </div>
+    </div>
+
+    <main class="container">
+        <div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+            <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+            <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img class="img_fluid" width="100%" height="100%" src="{{ post_types[carousel[0].type_id-1].img_url }}" alt="">
+
+                <div class="container">
+                <div class="carousel-caption text-start">
+                    <h1>{{ carousel[0].title }}</h1>
+                    <p>{{ carousel[0].abstract | truncate(300, True) | safe}}</p>
+                    <p><a class="btn btn-lg btn-primary" href="/viewpost/{{carousel[0].id}}">Full Post...</a></p>
+                </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img class="img_fluid" width="100%" height="100%" src="{{ post_types[carousel[1].type_id-1].img_url | safe }}">
+
+                <div class="container">
+                <div class="carousel-caption">
+                    <h1>{{ carousel[1].title }}</h1>
+                    <p>{{ carousel[1].abstract | truncate(300, True) | safe }} </p>
+                    <p><a class="btn btn-lg btn-primary" href="/viewpost/{{carousel[1].id}}">Full Post...</a></p>
+                </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img class="img_fluid" width="100%" height="100%" src="{{ post_types[carousel[2].type_id-1].img_url | safe }}">
+
+                <div class="container">
+                <div class="carousel-caption text-end">
+                    <h1>{{ carousel[2].title }}</h1>
+                    <p>{{  carousel[2].abstract | truncate(300, True) | safe }}</p>
+                    <p><a class="btn btn-lg btn-primary" href="/viewpost/{{carousel[2].id}}">Full Post...</a></p>
+                </div>
+                </div>
+            </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+            </button>
+        </div> 
+        
+    
+        <div class="row g-5">
+          <div class="col-md-8">
+              <h2>Recent</h2>
+              {% for p in posts %}
+                {% if p.type_id == 1 or p.type_id == 3 %}
+                  <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                    <div class="col-auto d-none d-lg-block">
+                        <img src={{p.highlight_img}} alt="highlight image" width="200" height="250">                        <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"/><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
+                    </div>
+                    <div class="col p-4 d-flex flex-column position-static">
+                    {% if p.type_id == 1 %}
+                        <strong class="d-inline-block mb-2 text-primary">Devotional</strong>
+                    {% else %}
+                        <strong class="d-inline-block mb-2 text-primary">Theology</strong>
+                    {% endif %}
+                      <h4 class="mb-0">{{p.title}}</h4>
+                      <div class="mb-1 text-muted">{{p.created_at.strftime('%m-%d-%Y')}}</div>
+                      <p class="card-text mb-auto">{{ p.abstract | truncate(100,True) | safe }}</p>
+                      <a href="/viewpost/{{p.id}}" class="stretched-link">Continue reading...</a>
+                    </div>
+                  </div>
+                {% elif p.type_id == 5 %}
+                  <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                    <div class="col d-flex flex-column position-static">
+                        <img src="../static/img/quote_bnr.jpeg"  alt="quotes and quips" height="50">
+                        <strong class="d-inline-block m-2 text-dark">{{p.title}}</strong>
+                      <p class="mx-2 fst-italic">{{ p.abstract | truncate(200,True) | safe }}</p>
+                      <h4 class="mb-2 text-center fst-italic">- {{p.author_name}}</h4>
+                      <a href="/viewpost/{{p.id}}" class="stretched-link">Full quote...</a>
+                    </div>
+                  </div>
+                {% else %}
+                  <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                    <div class="col p-4 d-flex flex-column position-static">
+                      <strong class="d-inline-block mb-2 text-success">Resources</strong>
+                      <h4 class="mb-0">{{p.title}}</h4>
+                      <div class="mb-1 text-muted">{{p.created_at.strftime('%m-%d-%Y')}}</div>
+                      <p class="mb-auto">{{ p.abstract | truncate(150,True) | safe }}</p>
+                      <a href="/viewpost/{{p.id}}" class="stretched-link">Continue reading...</a>
+                    </div>
+                    <div class="col-auto d-none d-lg-block">
+                      <img src={{p.highlight_img}} alt="highlight image" width="200" height="250">
+                    </div>
+                  </div>
+                {% endif %}
+               {% endfor%}
+          </div>
+          <div class="col-md-4">
+            <div class="position-sticky " style="top: 2rem;">
+              <div class="p-4 mb-2 bg-light border shadow rounded text-center">
+                <h4 class="fst-italic">Welcome!</h4>
+                <img src="../static/img/csm_head.png" alt="photo" width="150">
+                <p class="fst-italic my-1">This is the personal blog site of Chris Matthews. <strong>Philalethia</strong> is a Greek word that means "the love of truth." I hope you find truth that helps you here.</p>
+              </div>
+      
+              <div class="p-4 border shadow">
+                <h4 class="fst-italic">Categories</h4>
+                <ol class="list-unstyled">
+                {% for t in post_types %}
+                     <li><a href="/showtype/{{t.id}}">{{t.name}}</a></li>
+                {% endfor %}
+                </ol>
+              </div>
+              <div class="p-4 mb-3 border shadow">
+                <h4 class="fst-italic">Archives</h4>
+                <ol class="list-unstyled mb-0">
+                    {% for m in archive %}
+                        <li><a href="/showmonth/{{m.Created_Month}}/{{m.Created_Year}}">{{m.Month_Name + " " + m.Created_Year|string + " (" + m.Post_Count|string + ")"}}</a></li>
+                    {% endfor %}
+                </ol>
+              </div>
+      
+ 
+            </div>
+          </div>
+        </div>
+      </main>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</body>
+</html>

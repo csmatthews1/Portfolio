@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/blog.css') }}">
+    <title>Sign In or Sign Up</title>
+</head>
+<body>
+    <div class="container">
+        <header class="blog-header bg-dark p-2">
+          <div class="row flex-nowrap justify-content-between align-items-center">
+            <div class="col text-center">
+            <a href="/">
+                <!-- <img src="{{ url_for('static', filename='img/logo.png') }}" alt="logo"> -->
+                <img class='img-fluid img-logo' src="../static/img/logo.png" alt="logo">
+            </a>
+            </div>
+            <div class="col-7">
+            <h3 class="text-light m-0 p-0">philalethia <small class="text-muted">(φιλαλήθεια):</small></h3><p class="m-0 p-0 text-light">the love of truth</p>
+            </div>
+            <div class="col-4 d-flex justify-content-end align-items-center">
+                <div class="dropdown">
+                    <a class="link-secondary hover" type="button" id="searchForm" data-bs-toggle="dropdown" aria-expanded="false">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="mx-3" role="img" viewBox="0 0 24 24"><title>Search</title><circle cx="10.5" cy="10.5" r="7.5"/><path d="M21 21l-5.2-5.2"/></svg>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-dark">
+                        <form action="/searchposts" method="POST" class="p-2">
+                            <select class="mb-2 form-select" name="search_by">
+                                <option value="1" selected>Title</option>
+                                <option value="2">Author</option>
+                                <option value="3">Content</option>
+                            </select>
+                        <input type="text" class="mb-2 form-control" name="searchString">
+                        <input type="submit" class="btn btn-primary form-control" value="Search">
+                        </form>
+                    </div>
+                </div>
+              <a class="hover btn btn-sm btn-outline-secondary" href="#">Sign up/in</a>
+            </div>
+          </div>
+        </header>
+    </div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-8 m-4 p-4 border shadow bg-light">
+                <h3 class="text-success">Already Registered? Sign In</h3>
+                <form action='/login' method='post'>
+                    {% with messages = get_flashed_messages(category_filter=["login"]) %} <!-- declare a variable called messages -->
+                        {% if messages %}                            <!-- check if there are any messages -->
+                            {% for message in messages %}            <!-- loop through the messages -->
+                                <p class='error'>{{message}}</p>                   <!-- display each message in a paragraph tag -->
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}   
+                    <div class="form-group pt-2">
+                        <label for="email">Email Address:</label>
+                        <input type="text" class="form-control" name="email" placeholder="">
+                    </div>
+                    <div class="form-group pt-2">
+                        <label for="password">Password:</label>
+                        <input type="password" class="form-control" name="password" placeholder="">
+                    </div>
+                    <div class="form-group-right mt-2">
+                        <input type="submit" class="btn btn-primary" value="Submit">
+                    </div>
+                </form>                
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-8 m-4 p-4 bg-light shadow border">
+                <h3 class="text-success">Not Registered? Sign Up</h3>
+                <form action='/register' method='post'>
+                    {% with messages = get_flashed_messages(category_filter=["register"]) %} <!-- declare a variable called messages -->
+                        {% if messages %}                            <!-- check if there are any messages -->
+                            {% for message in messages %}            <!-- loop through the messages -->
+                                <p class='text-danger'>{{message}}</p>                   <!-- display each message in a paragraph tag -->
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}  
+                    <div class="form-group pt-2">
+                        <label for="first_name">First Name:</label>
+                        <input type="text" class="form-control" name="first_name" placeholder="">
+                    </div>
+                    <div class="form-group pt-2">
+                        <label for="last_name">Last Name:</label>
+                        <input type="text" class="form-control" name="last_name" placeholder="">
+                    </div>
+                    <div class="form-group pt-2">
+                        <label for="email">Email Address:</label>
+                        <input type="text" class="form-control" name="email" placeholder="">
+                    </div>
+                    <div class="form-group pt-2">
+                        <label for="password">Password:</label>
+                        <input type="password" class="form-control" name="password" placeholder="">
+                    </div>
+                    <div class="form-group pt-2">
+                        <label for="confirm">Confirm Password:</label>
+                        <input type="password" class="form-control" name="confirm" placeholder="">
+                    </div>
+                    <div class="form-group-right mt-2">
+                        <input type="submit" class="btn btn-primary" value="Submit">
+                    </div>
+                </form>                
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+</body>
+</html>
