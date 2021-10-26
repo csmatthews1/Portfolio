@@ -3,6 +3,7 @@ from flask import Flask,render_template, redirect, request, session
 from flask_app.models.user import User
 from flask_app.models.post import Post
 from flask_app.models.type import Type
+from flask_app.models.comment import Comment
 from flask import flash
 import calendar
 
@@ -31,7 +32,8 @@ def viewpost(id):
         'id': id
     }
     post = Post.get_by_id(data)
-    return render_template("view_post.html", post = post)
+    comments = Comment.get_by_post(data)
+    return render_template("view_post.html", post = post, comments =comments)
 
 @app.route('/showtype/<int:id>')         
 def showtype(id):
@@ -117,4 +119,26 @@ def newpost():
     Post.save(data)
     flash("Post successfully submitted.")
     return redirect("/admin")
+
+@app.route('/submitcomment', methods=['POST'])         
+def submitcomment():
+    if len(request.form['comment']) < 1:
+        return redirect("/viewpost/" + request.form['id'])
+    
+    data = {
+        'post_id': request.form['id'],
+        'comment': request.form['comment'],
+        'author_id': session['user_id'],
+    }
+
+    Comment.save(data)
+    return redirect("/viewpost/" + request.form['id'])
+
+@app.route('/deletecomment/<int:post_id>/<int:id>')         
+def deletecomment(post_id, id):
+    data = {
+        'id': id
+    }
+    Comment.delete(data)
+    return redirect("/viewpost/" + str(post_id))
 

@@ -1,4 +1,5 @@
 from flask_app.config.mysqlconnection import connectToMySQL
+from flask_app.models.comment import Comment
 from flask import flash
 import calendar
 
@@ -34,8 +35,9 @@ class Post:
         query = "SELECT * FROM posts WHERE id = %(id)s;"
         # make sure to call the connectToMySQL function with the schema you are targeting.
         result = connectToMySQL('blog').query_db(query, data)
-        if len(result) < 1:
+        if len(result) < 1 or result == False:
             return False
+            
         return cls(result[0])
 
     @classmethod

@@ -31,7 +31,6 @@ def signin():
 def register():
     if not User.validate_user(request.form):
         return redirect('/')
-    
 
     data = {
         'first_name': request.form['first_name'],
