@@ -31,9 +31,16 @@ def viewpost(id):
     data = {
         'id': id
     }
+    liked = 0
+    numLikes = 0
     post = Post.get_by_id(data)
+    if session.get('user_id'):
+        for user_id in post.likedUsers:
+            numLikes += 1
+            if user_id ==  session['user_id']:
+                liked = 1
     comments = Comment.get_by_post(data)
-    return render_template("view_post.html", post = post, comments =comments)
+    return render_template("view_post.html", post = post, comments =comments, liked=liked, numLikes=numLikes)
 
 @app.route('/showtype/<int:id>')         
 def showtype(id):
@@ -133,6 +140,18 @@ def submitcomment():
 
     Comment.save(data)
     return redirect("/viewpost/" + request.form['id'])
+
+@app.route('/likepost', methods=['POST'])         
+def likepost():
+    data = {
+        'id': request.form['post_id'],
+        'post_id': request.form['post_id'],
+        'liked': request.form['liked'],
+        'user_id': session['user_id']
+    }
+    post = Post.get_by_id(data)
+    post.toggleLike(data)
+    return redirect("/viewpost/" + request.form['post_id'])
 
 @app.route('/deletecomment/<int:post_id>/<int:id>')         
 def deletecomment(post_id, id):

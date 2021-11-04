@@ -18,6 +18,14 @@ class Post:
         self.created_at = data['created_at']
         self.updated_at = data['updated_at']
 
+        self.likedUsers = [];
+        query = "SELECT user_id FROM likes WHERE post_id = %(id)s;"
+        results = connectToMySQL('blog').query_db(query, data)
+        likes = []
+        # Iterate over the db results and create instances of friends with cls.
+        for like in results:
+            self.likedUsers.append( like['user_id'] )
+
     @classmethod
     def get_all(cls):
         query = "SELECT * FROM posts;"
@@ -124,6 +132,16 @@ class Post:
         query = "UPDATE posts SET top_post = %(top_post)s WHERE id=%(id)s"
 
         return connectToMySQL('blog').query_db( query, data )
+
+    @classmethod
+    def toggleLike(cls, data):
+        if data['liked'] != "0":
+            query = "DELETE FROM likes WHERE post_id=%(post_id)s AND user_id=%(user_id)s;"
+            return connectToMySQL('blog').query_db( query, data )
+        else:
+            query = "INSERT INTO likes ( post_id, user_id, created_at, updated_at ) VALUES ( %(post_id)s, %(user_id)s, NOW(), NOW());"
+            return connectToMySQL('blog').query_db( query, data )
+
 
     @staticmethod
     def validate(post):

@@ -56,7 +56,7 @@
             {% if post.type_id == 5 %} 
                 <div class="row align-items-center">
                     <div class="col-4 text-center">
-                        <a href="{{post.highlight_url}}" alt="author info"><img class="shadow-lg border border-3 border-dark" src={{post.highlight_img}} alt="author image" width="200"></a>
+                        <a href="{{post.highlight_url}}"><img class="shadow-lg border border-3 border-dark" src={{post.highlight_img}} alt="author image" width="200"></a>
                     </div>
                     <div class="col-8">
                         <p class="text-center fst-italic">{{ post.abstract | safe }} <br><strong>-{{post.author_name}}, {{post.author_title}}</strong></p>
@@ -70,12 +70,22 @@
                                     <button class="btn btn-primary " type="submit">Submit</button>
                                 </div>
                             </form>
+                            <form class="col-2 mt-5" action='/likepost' method='post'>
+                                <div class="input-group align-items-center">
+                                    <input type="hidden" name="liked" value="{{liked}}">
+                                    <input type="hidden" name="post_id" value="{{post.id}}">
+                                    {% if (liked != 0)  %}
+                                        <button class="ml-2 btn btn-success" type="submit"><img src="../static/img/like_wt.png" width="16" alt="like"> {{numLikes}} Likes</button>
+                                    {% else %}
+                                        <button class="ml-2 btn btn-secondary" type="submit"><img src="../static/img/like_wt.png" width="16" alt="like"> {{numLikes}} Likes</button>
+                                    {% endif %}
+                                </div>
+                            </form>
                         {% else %}
                         <div class="col-8 mt-5">
-                            <p class="text-secondary fst-italic">Sign in/up if you wish to make a comment.</p>
+                            <p class="text-secondary fst-italic">Sign in/up if you wish to 'Like' post or make a comment.</p>
                         </div>
                         {% endif %}
-                        <div class="fb-like mt-5 col-2" data-href="." data-width="" data-layout="button_count" data-action="like" data-size="large" data-share="false"></div>
                         </div>
                     </div>
                 </div>
@@ -84,7 +94,7 @@
                     <h2 class="text-center">{{post.title}}</h2>
                     <p class="text-center">by {{post.author_name}}</p>
                     <div class="text-center">
-                        <a href="{{post.highlight_url}}" alt="author info"><img class="shadow-lg border border-3 border-dark" src={{post.highlight_img}} alt="author image" width="300"></a>
+                        <a href="{{post.highlight_url}}"><img class="shadow-lg border border-3 border-dark" src={{post.highlight_img}} alt="author image" width="300"></a>
                     </div>
                     <p>{{post.body | safe}}</p>
                     <div class="row mx-auto align-items-center">
@@ -94,11 +104,22 @@
                                     <label for="comment">Comment:</label>
                                     <input type="hidden" name="id" value="{{post.id}}">
                                     <input class="form-control" type="text" name="comment">
-                                    <button class="ml-2 btn btn-primary " type="submit">Submit</button>
+                                    <button class="ml-2 btn btn-primary" type="submit">Submit</button>
+                                </div>
+                            </form>
+                            <form class="col-2 mt-4" action='/likepost' method='post'>
+                                <div class="input-group align-items-center">
+                                    <input type="hidden" name="liked" value="{{liked}}">
+                                    <input type="hidden" name="post_id" value="{{post.id}}">
+                                    {% if (liked != 0)  %}
+                                        <button class="ml-2 btn btn-success" type="submit"><img src="../static/img/like_wt.png" width="16" alt="like"> {{numLikes}} Likes</button>
+                                    {% else %}
+                                        <button class="ml-2 btn btn-secondary" type="submit"><img src="../static/img/like_wt.png" width="16" alt="like"> {{numLikes}} Likes</button>
+                                    {% endif %}
                                 </div>
                             </form>
                         {% else %}
-                            <p>Sign in/up if you wish to make a comment.</p>
+                            <p>Sign in/up if you wish to 'Like' post or make a comment.</p>
                         {% endif %}
                     </div>
                 </div>
@@ -118,7 +139,6 @@
                          <div class="fst-italic">-{{c.author.first_name}} {{c.author.last_name}}</div>
                     </div>
                     {% endfor %}
-                </table>
             </div>  
         </div>
         {% endif %}
